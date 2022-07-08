@@ -20,7 +20,11 @@ dbConnection();
 app.use( express.static("public") );
 
 //CORS
-app.use( cors() );
+var corsOptions = {
+    origin: 'http://http://localhost:4200/',
+    optionsSuccessStatus: 200 }
+
+app.use(cors(corsOptions));
 
 //Lectura y parseo del body 
 
