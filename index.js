@@ -9,7 +9,7 @@ require("dotenv").config();
 //Crear el servidor/aplicacion de express
 
 const app = express();
-
+app.use(cors());
 //base de datos
 
 
@@ -20,11 +20,8 @@ dbConnection();
 app.use( express.static("public") );
 
 //CORS
-var corsOptions = {
-    origin: 'http://http://localhost:4200/',
-    optionsSuccessStatus: 200 }
 
-app.use(cors(corsOptions));
+
 
 //Lectura y parseo del body 
 
