@@ -31,6 +31,7 @@ app.use(express.json() );
 //rutas
 
 app.use("/api/auth", require("./routes/auth"));
+app.use("/api/categories", require("./routes/categories"));
 
 
 app.listen(process.env.PORT, ()=> {
