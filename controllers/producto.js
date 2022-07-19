@@ -5,26 +5,6 @@ const Categoria = require("../models/Categoria")
 const crearProducto = async (req, res= response) => {
 
     const {name,precio,imagenes,cantidad,categoria} = req.body;
-    // const prueba = await Categoria.aggregate(
-
-       
-    //     [
-    //         {
-    //             $lookup:
-    //             {
-    //                 from:"Producto",
-    //                 localField:"name",
-    //                 foreignField:"categoria",
-    //                 as: "categoriaName"
-    //             }
-    //         },
-            
-    //         {$match: {categories: categoria}  }
-
-    //     ]
-    // )
-    
-
     try{
         try{
             await Categoria.findById(categoria);
@@ -183,7 +163,7 @@ const eliminarProducto = async (req, res= response) => {
 
 const getProductos = async (req, res = response)=>{
     try{
-    let productos = await Producto.find()
+    let productos = await Producto.find().populate('categoria');
     if(!productos) {
         return res.status(400).json({
             ok: false,
@@ -210,13 +190,13 @@ const searchProductos = async (req, res = response)=>{
         let categoriaId = await Categoria.findOne({name: categoria});
         let productos =[]; 
         if(!query && categoriaId){
-            productos = await Producto.find({categoria: categoriaId})
+            productos = await Producto.find({categoria: categoriaId}).populate('categoria');
         }
         if(!categoriaId && query){
-            productos = await Producto.find({name: {"$regex": query}})
+            productos = await Producto.find({name: {"$regex": query}}).populate('categoria');
         }
         if(categoriaId && query){
-            productos = await Producto.find({name: {"$regex": query} , categoria: categoriaId})
+            productos = await Producto.find({name: {"$regex": query} , categoria: categoriaId}).populate('categoria');
         }
         if(productos.length === 0) {
             return res.status(400).json({
@@ -245,7 +225,7 @@ const getProducto = async (req, res = response)=>{
     
     try{
 
-        let producto= await Producto.findById(_id);
+        let producto= await Producto.findById(_id).populate('categoria');;
         if(!producto ) {
         return res.status(400).json({
             ok: false,
