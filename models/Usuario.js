@@ -18,6 +18,7 @@ const UsuarioSchema = Schema({
     address:{
         type: String,
         required: true 
+        
     },
 
 });

@@ -1,0 +1,31 @@
+const {Router } = require("express");
+const { crearProducto, editarProducto, eliminarProducto } = require("../controllers/producto");
+const { validarCampos } = require("../middlewares/validar-campos");
+
+
+const router= Router();
+
+//crear nuevo producto 
+
+router.post("/newproducto", crearProducto);
+
+//ver todas las categorias
+
+
+// ver una categoria
+//router.get('/solo',validarCampos,getCategoria );
+
+//ver todas las categorias
+
+//router.get('/all',validarCampos,getCategorias );
+
+//editar categoria 
+
+router.post("/editproducto",editarProducto);
+
+
+//eliminar categoria 
+
+router.post("/deleteproducto",eliminarProducto);
+
+module.exports = router; 
