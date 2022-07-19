@@ -122,7 +122,7 @@ const getCategorias = async (req, res = response)=>{
         console.log(error);
         return res.status(500).json({
             ok: true,
-            msg: 'Error obteniendo todos los libros',
+            msg: 'Error obteniendo todas las categorias',
         })
     }
 }

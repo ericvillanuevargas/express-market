@@ -12,30 +12,28 @@ const ProductoSchema = Schema({
         required: true,
         
     },
-    imagen:{
-        type: String,
-        required: true ,
-        unique: true
+    cantidad:{
+        type: Number,
+        required: true,
+        
+    },
+    imagenes:{
+        type: [String],
+        required: true
     },
     rating:{
         type: Number,
-        required: true,
+        default: 0
        
     },
-    rating_cant:{
-        type: Number,
-        required: true,
-        
-    },
-    descripcion:{
-        type: String,
-        required: true,
-        
+    ratings:{
+        type: [Number],
+        default: 0
     },
     categoria:{
 
-       type: Schema.ObjectId, ref: " Categoria",
-       required: true,
+       type: Schema.ObjectId, ref: "Categoria",
+       required: true
     },
 
 });

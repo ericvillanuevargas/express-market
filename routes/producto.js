@@ -1,5 +1,5 @@
 const {Router } = require("express");
-const { crearProducto, editarProducto, eliminarProducto } = require("../controllers/producto");
+const { crearProducto, editarProducto, eliminarProducto, votar, getProductos, getProducto, searchProductos } = require("../controllers/producto");
 const { validarCampos } = require("../middlewares/validar-campos");
 
 
@@ -8,6 +8,10 @@ const router= Router();
 //crear nuevo producto 
 
 router.post("/newproducto", crearProducto);
+router.get("/search", searchProductos)
+router.get("/getOne", getProducto)
+router.get("/all", getProductos);
+router.post("/vote", votar);
 
 //ver todas las categorias
 
