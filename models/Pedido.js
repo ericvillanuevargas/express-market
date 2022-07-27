@@ -6,22 +6,21 @@ const PedidoSchema = Schema({
         type: String,
         required: true
     },
-    deliveryID:{
-        type: String,
-        required: true
-    },
     Productos:{
-        type: Schema.ObjectId, ref: "Carrito",
+        type: [Schema.ObjectId], ref: "Producto",
         required: true
     },
     Estado:{
-        type: string,
-        required: true
+        type: String
     },
     Direccion_entrega:{
-        type: string,
+        type: String,
         required: true
     },
+    Total:{
+        type: Number,
+        required: true
+    }
 });
 
 module.exports= model("Pedido",ProductoSchema);
