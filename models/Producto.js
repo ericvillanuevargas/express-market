@@ -21,6 +21,9 @@ const ProductoSchema = Schema({
         type: [String],
         required: true
     },
+    descripcion:{
+        type: String
+    },
     rating:{
         type: Number,
         default: 0

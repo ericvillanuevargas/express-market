@@ -4,7 +4,7 @@ const Categoria = require("../models/Categoria")
 
 const crearProducto = async (req, res= response) => {
 
-    const {name,precio,imagenes,cantidad,categoria} = req.body;
+    const {name,precio,imagenes,cantidad,categoria,descripcion} = req.body;
     try{
         try{
             await Categoria.findById(categoria);
@@ -88,7 +88,7 @@ const votar = async (req, res= response) => {
 const editarProducto = async (req, res= response) => {
 
     try{
-        const {_id,name,precio,imagenes,cantidad,categoria,ratings} = req.body;
+        const {_id,name,precio,imagenes,cantidad,categoria,ratings,descripcion} = req.body;
     
             let producto= await Producto.findById({_id: _id});
             if(!producto ) {
@@ -103,6 +103,7 @@ const editarProducto = async (req, res= response) => {
                     name: name,
                     precio: precio,
                     imagenes: imagenes,
+                    descripcion: descripcion,
                     rating: Math.floor((ratingsProd.reduce((a,b) => a + b, 0) / ratingsProd.length)),
                     ratings: ratings,
                     cantidad: cantidad,

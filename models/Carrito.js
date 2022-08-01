@@ -15,4 +15,4 @@ const CarritoSchema = Schema({
 
 });
 
-module.exports= model("Carrito",ProductoSchema);
+module.exports= model("Carrito",CarritoSchema);
