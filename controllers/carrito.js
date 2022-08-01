@@ -2,6 +2,7 @@ const { response} = require("express");
 const Carrito = require("../models/Carrito")
 const Usuario = require("../models/Usuario")
 const Producto = require("../models/Producto");
+const ItemCarrito = require("../models/ItemCarrito");
 const { isValidObjectId, Mongoose } = require("mongoose");
 
 const crearCarrito = async (req, res) => {
@@ -54,7 +55,7 @@ const quitarProducto = async (req, res) => {
 
     //El metodo recibe: id (Del producto), cantidad (Del producto.) 
 
-    const { ProdId, userID, carritoID, ProdCarrito }= req.body
+    const { ProdId, userID}= req.body
 
     try {
         let usuario = await Usuario.findById({_id: userID})
@@ -64,9 +65,9 @@ const quitarProducto = async (req, res) => {
                     //introduccir id producto
                     
                     
-                    await Carrito.updateOne({_id: carritoID},{
+                    await Carrito.updateOne({userID: userID},{
                         
-                        
+                     $pull: { Productos: ProdId }
                         
                     })
 
@@ -107,30 +108,27 @@ const ponerProducto = async (req, res) => {
     
     //El metodo recibe: id (Del producto), cantidad (Del producto.) 
 
-    const { ProdId, userID, carritoID, ProdCarrito }= req.body
+    const { ProdID, cantidad, carritoID }= req.body
 
     try {
         //usuario
-        let usuario = await Usuario.findById({_id: userID})
-        if(usuario){
-            //carrito
-            let carrito = await Carrito.findById({_id: carritoID})
-            if(carrito){
+        let carrito = await Carrito.findById(carritoID);
+        if(carrito){
                 //producto
-                let product = await Producto.findById({_id: ProdId})
+                let product = await Producto.findById( ProdID)
                 if(product){
                     //introduccir id producto
 
-                    
-                    await Carrito.updateOne({_id: carritoID},{
-                        $push: {Productos: ProdId}
+                    const dbItemCarrito= new ItemCarrito(req.body);
+                    await dbItemCarrito.save();
+                    await Carrito.updateOne({_id:carritoID},{
+                        $push: {Productos: dbItemCarrito._id}
                         
                     })
 
-
                     return res.status(201).json({
                         ok:true,
-                        Productos: ProdId,
+                        Productos: ProdID,
                         msg: "Se ha añadido el producto."
                     })
 
@@ -141,17 +139,11 @@ const ponerProducto = async (req, res) => {
                         msg: 'No hemos encontrado este producto'
                     })
                 }
-            }else{
-                return res.status(400).json({
-                    ok: false,
-                    msg: 'No hemos encontrado este carrito'
-                })
-            }
         }
         else{
             return res.status(400).json({
                 ok: false,
-                msg: 'No hemos encontrado este usuario'
+                msg: 'No hemos encontrado este carrito'
             })
         }
         
@@ -178,11 +170,11 @@ const getCarrito= async (req, res) => {
     //Usando el id del usuario, mandame el carrito de este.
 
     const 
-        usuarioID
-        = req.header('userID');
+        carritoID
+        = req.header('carritoID');
     try{
 
-        let carrito = await Carrito.findOne({userID: usuarioID});
+        let carrito = await Carrito.findById(carritoID).populate('Productos');
         if(!carrito ) {
         return res.status(400).json({
             ok: false,
@@ -202,6 +194,9 @@ const getCarrito= async (req, res) => {
     }
 
 }
+
+
+
 
 //No es necesario editar el carrito eso ya se hace en ponerProducto y quitarProducto.
 

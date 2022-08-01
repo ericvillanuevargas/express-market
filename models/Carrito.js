@@ -7,9 +7,8 @@ const CarritoSchema = Schema({
         required: true,
         unique: true
     },
-    Productos:{
-        type: [Schema.ObjectId], ref: "Producto"
-    }
+    Productos:
+         [{type: Schema.Types.ObjectId, ref: "ItemCarrito"}]
 
 
 
