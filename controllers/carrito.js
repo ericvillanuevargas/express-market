@@ -4,6 +4,7 @@ const Usuario = require("../models/Usuario")
 const Producto = require("../models/Producto");
 const ItemCarrito = require("../models/ItemCarrito");
 const { isValidObjectId, Mongoose } = require("mongoose");
+const { db } = require("../models/Carrito");
 
 const crearCarrito = async (req, res) => {
     //Este metodo crea un carrito, y para ello necesita SI O SI tener un ID de usuario.
@@ -55,29 +56,32 @@ const quitarProducto = async (req, res) => {
 
     //El metodo recibe: id (Del producto), cantidad (Del producto.) 
 
-    const { ProdId, userID}= req.body
+    const { ProdId, userID,carritoID,ItemCarritoID, cant}= req.body
 
     try {
-        let usuario = await Usuario.findById({_id: userID})
-        if(usuario){
-            let product = await Producto.findById({_id: ProdId})
+
+      
+
+        let ItemCarri = await ItemCarrito.findById({_id: ItemCarritoID})
+        if(ItemCarri){
+
+            let product = await ItemCarrito.productoID
                 if(product){
-                    //introduccir id producto
-                    
-                    
-                    await Carrito.updateOne({userID: userID},{
+                    const dbItemCarrito= new ItemCarrito(req.body);
+                    await dbItemCarrito.save();
+                    await Producto.updateOne({_id:ProdId},{
+
+                        cantidad: cantidad + ItemCarrito.cantidad
                         
-                     $pull: { Productos: ProdId }
                         
                     })
-
 
                     return res.status(201).json({
                         ok:true,
-                        Productos: ProdId,
-                        msg: "Se ha quitado el producto."
+                        Productos: ProdID,
+                        msg: "Se ha añadido el producto."
                     })
-
+                    
                 }
                 else{
                     return res.status(400).json({
