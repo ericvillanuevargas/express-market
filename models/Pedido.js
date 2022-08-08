@@ -6,19 +6,13 @@ const PedidoSchema = Schema({
         type: String,
         required: true
     },
-    Productos:{
-        type: [Schema.ObjectId], ref: "Producto",
-        required: true
-    },
+    Productos:
+        [{type: Schema.Types.ObjectId, ref: "ItemCarrito", required:true}],
     Estado:{
         type: String
     },
     Direccion_entrega:{
         type: String,
-        required: true
-    },
-    Total:{
-        type: Number,
         required: true
     }
 });

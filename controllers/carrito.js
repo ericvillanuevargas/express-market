@@ -54,32 +54,26 @@ const quitarProducto = async (req, res) => {
     //Sino sumarle la cantidad que habia en el carrito al producto original.
     //Osea, es como si devolvieses el producto en la vida real.
 
-    //El metodo recibe: id (Del producto), cantidad (Del producto.) 
+    //El metodo recibe: id (Del item).
 
-    const { ProdId, userID,carritoID,ItemCarritoID, cant}= req.body
+    const { ItemCarritoID }= req.body
 
     try {
-
-      
 
         let ItemCarri = await ItemCarrito.findById({_id: ItemCarritoID})
         if(ItemCarri){
 
-            let product = await ItemCarrito.productoID
+            let product = await Producto.findById( ItemCarri.productoID)
+            console.log(product);
                 if(product){
-                    const dbItemCarrito= new ItemCarrito(req.body);
-                    await dbItemCarrito.save();
-                    await Producto.updateOne({_id:ProdId},{
-
-                        cantidad: cantidad + ItemCarrito.cantidad
-                        
-                        
+                    await Producto.updateOne({_id:ItemCarri.productoID},{
+                        cantidad: product.cantidad + ItemCarri.cantidad
+                                
                     })
-
+                    await ItemCarrito.deleteOne({ _id: ItemCarritoID })
                     return res.status(201).json({
                         ok:true,
-                        Productos: ProdID,
-                        msg: "Se ha añadido el producto."
+                        msg: "Se ha quitado el producto del carrito."
                     })
                     
                 }
@@ -93,7 +87,7 @@ const quitarProducto = async (req, res) => {
         else{
             return res.status(400).json({
                 ok: false,
-                msg: 'No hemos encontrado este usuario'
+                msg: 'No hemos encontrado este item'
             })
         }
     } catch (error) {
@@ -112,14 +106,14 @@ const ponerProducto = async (req, res) => {
     
     //El metodo recibe: id (Del producto), cantidad (Del producto.) 
 
-    const { ProdID, cantidad, carritoID }= req.body
+    const { productoID, cantidad, carritoID }= req.body
 
     try {
         //usuario
         let carrito = await Carrito.findById(carritoID);
         if(carrito){
                 //producto
-                let product = await Producto.findById( ProdID)
+                let product = await Producto.findById(productoID)
                 if(product){
                     //introduccir id producto
 
@@ -129,10 +123,15 @@ const ponerProducto = async (req, res) => {
                         $push: {Productos: dbItemCarrito._id}
                         
                     })
+                    await Producto.updateOne({ _id: productoID},{
 
+                        cantidad: product.cantidad - cantidad
+                       
+                    })
+                    
                     return res.status(201).json({
                         ok:true,
-                        Productos: ProdID,
+                        Productos: productoID,
                         msg: "Se ha añadido el producto."
                     })
 

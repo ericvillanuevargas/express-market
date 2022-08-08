@@ -12,6 +12,47 @@ const crearPedido= async (req, res) => {
     //El metodo recibe: userID, productos y direccion.
     //Es tu responsabilidad no solo limpiar el carrito, sino calcular el total. 
 
+    const {CarritoID,Direccion_entrega}= req.body
+
+    try {
+        //usuario
+        let carrito = await Carrito.findById(CarritoID);
+        if(carrito){
+                    const dbPedido= new Pedido({
+                        userID: carrito.userID,
+                        Productos: carrito.Productos,
+                        Estado: "Aprobado",
+                        Direccion_entrega: Direccion_entrega
+                    });
+                    await Carrito.updateOne({ _id: CarritoID},{
+
+                        Productos: []
+                       
+                    })
+                    //console.log(dbPedido);
+                    await dbPedido.save();
+                    
+                    return res.status(201).json({
+                        ok:true,
+                        msg: "Se ha creado el pedido"
+                    })
+
+                }
+                else{
+                    return res.status(400).json({
+                        ok: false,
+                        msg: 'No hemos encontrado este producto'
+                    })
+                }
+        }
+         catch (error) {
+        console.log(error);
+            return res.status(500).json({
+                ok: false,
+                msg: 'Error seleccionando carrito',
+            })
+    }
+
 }
 
 const actualizarEstadoPedido= async (req, res) => {
@@ -22,10 +63,54 @@ const actualizarEstadoPedido= async (req, res) => {
     
     //El metodo recibe: id (del pedido), y el estado actual, para que lo pases al siguiente.
     //Si alguien pone el huevo de mandar el estado "finalizado" mandalo pa la mierda porque ya no hay na que hacer XD 
+    const {PedidoID}= req.body;
+    let pedido = await Pedido.findById(PedidoID);
+    if(pedido){
+        if(pedido.Estado === "Aprobado"){
+            await Pedido.updateOne({ _id: PedidoID},{
+
+                Estado: "En Camino"
+            })
+            return res.status(200).json({
+                ok: true,
+                msg: 'Su pedido esta en camino...'
+            })
+        }
+        if(pedido.Estado === "En Camino"){
+            await Pedido.updateOne({ _id: PedidoID},{
+                Estado: "Finalizado"
+            })
+            return res.status(200).json({
+                ok: true,
+                msg: 'Su pedido esta finalizado!'
+            })
+        }
+        if(pedido.Estado === "Finalizado"){             
+            return res.status(400).json({
+            ok: true,
+            msg: 'Este pedido ya no se puede alterar.',
+        })}
+    }
 }
 const cancelarPedido= async (req, res) => {
     //Borras el pedido, no sin antes devolver los productos de este al carrito. Recuerda que puedes usar el userID para hacer esto.
     //Solamente un pedido de estado "aprobado" se puede cancelar. los otros 2 estados ya no se pueden dar pa' tra'
 
     //El metodo recibe: id (del pedido)
+
+    const {PedidoID}= req.body;
+    let pedido = await Pedido.findById(PedidoID);
+    if(pedido){
+
+        await Carrito.updateOne({userID: pedido.userID},{
+
+            Productos: pedido.Productos
+           
+        })
+        await Pedido.deleteOne({ _id: PedidoID })
+        return res.status(200).json({
+            ok: true,
+            msg: 'Su pedido esta en camino...'
+        })
+    }
 }
