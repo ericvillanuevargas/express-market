@@ -6,6 +6,10 @@ const ItemCarritoSchema = Schema({
         type: Schema.ObjectId, ref: "Carrito",
         required: true,
     },
+    voted:{
+        type: Boolean,
+        default: false
+    },
     productoID:{
         type: Schema.ObjectId, ref: "Producto"
     },

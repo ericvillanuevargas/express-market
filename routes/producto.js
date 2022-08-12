@@ -8,9 +8,9 @@ const router= Router();
 //crear nuevo producto 
 
 router.post("/newproducto", crearProducto);
-router.get("/search", searchProductos)
+router.post("/search", searchProductos)
 router.get("/getOne", getProducto)
-router.get("/all", getProductos);
+router.get("/all", getProductos); 
 router.post("/vote", votar);
 
 //ver todas las categorias

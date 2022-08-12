@@ -35,7 +35,7 @@ const crearCarrito = async (req, res) => {
         return res.status(201).json({
             ok:true,
             userID: userID,
-            Productos: Productos
+            Productos: [Productos]
 
         })
 
@@ -60,11 +60,11 @@ const quitarProducto = async (req, res) => {
 
     try {
 
-        let ItemCarri = await ItemCarrito.findById({_id: ItemCarritoID})
+        let ItemCarri = await ItemCarrito.findById(ItemCarritoID)
         if(ItemCarri){
 
             let product = await Producto.findById( ItemCarri.productoID)
-            console.log(product);
+
                 if(product){
                     await Producto.updateOne({_id:ItemCarri.productoID},{
                         cantidad: product.cantidad + ItemCarri.cantidad
@@ -110,7 +110,7 @@ const ponerProducto = async (req, res) => {
 
     try {
         //usuario
-        let carrito = await Carrito.findById(carritoID);
+        let carrito = await Carrito.find({_id:carritoID});
         if(carrito){
                 //producto
                 let product = await Producto.findById(productoID)
@@ -173,11 +173,16 @@ const getCarrito= async (req, res) => {
     //Usando el id del usuario, mandame el carrito de este.
 
     const 
-        carritoID
-        = req.header('carritoID');
+        userID
+        = req.header('userID');
     try{
 
-        let carrito = await Carrito.findById(carritoID).populate('Productos');
+        let carrito = await Carrito.find({userID:userID}).populate('Productos').populate({
+            path : 'Productos',
+            populate : {
+              path : 'productoID'
+            }
+          });
         if(!carrito ) {
         return res.status(400).json({
             ok: false,

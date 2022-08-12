@@ -1,6 +1,7 @@
 const { response} = require("express");
 const Producto = require("../models/Producto")
-const Categoria = require("../models/Categoria")
+const Categoria = require("../models/Categoria");
+const ItemCarrito = require("../models/ItemCarrito");
 
 const crearProducto = async (req, res= response) => {
 
@@ -53,7 +54,7 @@ const crearProducto = async (req, res= response) => {
 const votar = async (req, res= response) => {
 
     try{
-        const {_id, rating} = req.body;
+        const {_id, rating, ItemCarritoID} = req.body;
     
             let producto= await Producto.findById({_id: _id});
             if(!producto ) {
@@ -66,9 +67,12 @@ const votar = async (req, res= response) => {
                 let ratings = producto.ratings;
                 ratings.push(rating);
                 await Producto.updateOne({ _id: _id},{
-                    rating: Math.floor((ratings.reduce((a,b) => a + b, 0) / ratings.length)),
+                    rating: Math.floor(ratings.reduce((a,b) => a + b, 0) / ratings.length),
                     ratings: ratings
             
+                })
+                await ItemCarrito.updateOne({_id: ItemCarritoID},{
+                    voted:true
                 })
                 return res.status(201).json({
                     ok:true,
@@ -199,15 +203,19 @@ const searchProductos = async (req, res = response)=>{
         if(categoriaId && query){
             productos = await Producto.find({name: {"$regex": query} , categoria: categoriaId}).populate('categoria');
         }
+        if(!query && !categoriaId){
+            productos = await Producto.find().populate('categoria');
+  
+        }
+
         if(productos.length === 0) {
             return res.status(400).json({
                 ok: false,
                 msg: 'No hay productos bajo la busqueda ' + '"' + query + '"'
                 })
             }
-        else{
-            return res.json(productos)
-        }
+        return res.json(productos) 
+
     }
         catch (error){
         console.log(error);

@@ -34,6 +34,7 @@ app.use("/api/auth", require("./routes/auth"));
 app.use("/api/categories", require("./routes/categories"));
 app.use("/api/producto", require("./routes/producto"));
 app.use("/api/carrito", require("./routes/carrito"));
+app.use("/api/pedidos", require("./routes/pedido"));
 
 app.listen(process.env.PORT, ()=> {
     console.log(`Servidor corriendo en puerto ${process.env.PORT}`)

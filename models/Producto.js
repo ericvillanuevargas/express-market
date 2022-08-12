@@ -31,7 +31,7 @@ const ProductoSchema = Schema({
     },
     ratings:{
         type: [Number],
-        default: 0
+        default: []
     },
     categoria:{
 

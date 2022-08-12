@@ -11,10 +11,13 @@ const PedidoSchema = Schema({
     Estado:{
         type: String
     },
+    Fecha:{
+        type: String,
+    },
     Direccion_entrega:{
         type: String,
         required: true
     }
 });
 
-module.exports= model("Pedido",ProductoSchema);
+module.exports= model("Pedido",PedidoSchema);

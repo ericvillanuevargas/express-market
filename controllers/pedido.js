@@ -1,4 +1,5 @@
 const { response} = require("express");
+const Carrito = require("../models/Carrito");
 const Pedido = require("../models/Pedido")
 
 
@@ -22,6 +23,7 @@ const crearPedido= async (req, res) => {
                         userID: carrito.userID,
                         Productos: carrito.Productos,
                         Estado: "Aprobado",
+                        Fecha: new Date().toLocaleDateString(),
                         Direccion_entrega: Direccion_entrega
                     });
                     await Carrito.updateOne({ _id: CarritoID},{
@@ -49,7 +51,7 @@ const crearPedido= async (req, res) => {
         console.log(error);
             return res.status(500).json({
                 ok: false,
-                msg: 'Error seleccionando carrito',
+                msg: 'Error creando pedido',
             })
     }
 
@@ -113,4 +115,42 @@ const cancelarPedido= async (req, res) => {
             msg: 'Su pedido esta en camino...'
         })
     }
+}
+
+const getPedidos = async (req, res) => {
+    const 
+        userID
+        = req.header('userID');
+    try{
+
+        let pedido = await Pedido.find({userID:userID}).populate('Productos').populate({
+            path : 'Productos',
+            populate : {
+              path : 'productoID'
+            }
+          });
+        if(!pedido ) {
+        return res.status(400).json({
+            ok: false,
+            msg: 'No hemos encontrado este pedido'
+        })
+        }
+        else{
+            return res.json(pedido)
+        }
+}
+    catch (error){
+        console.log(error);
+        return res.status(500).json({
+            ok: false,
+            msg: 'Error obteniendo pedidos',
+        })
+    }
+
+}
+module.exports={
+    crearPedido,
+    actualizarEstadoPedido,
+    cancelarPedido,
+    getPedidos
 }
