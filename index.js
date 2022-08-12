@@ -35,7 +35,10 @@ app.use("/api/categories", require("./routes/categories"));
 app.use("/api/producto", require("./routes/producto"));
 app.use("/api/carrito", require("./routes/carrito"));
 app.use("/api/pedidos", require("./routes/pedido"));
-
+//Manejar todas las otras rutas
+app.get('*', (req,res) => {
+    res.sendFile(path.resolve(__dirname,'public/index.html'))
+}) 
 app.listen(process.env.PORT, ()=> {
     console.log(`Servidor corriendo en puerto ${process.env.PORT}`)
 });
