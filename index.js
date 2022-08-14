@@ -36,6 +36,7 @@ app.use("/api/producto", require("./routes/producto"));
 app.use("/api/carrito", require("./routes/carrito"));
 app.use("/api/pedidos", require("./routes/pedido"));
 //Manejar todas las otras rutas
+app.use(express.static('public'))
 app.get('*', (req,res) => {
     res.sendFile(path.resolve(__dirname,'public/index.html'))
 }) 

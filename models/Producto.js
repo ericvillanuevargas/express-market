@@ -33,11 +33,9 @@ const ProductoSchema = Schema({
         type: [Number],
         default: []
     },
-    categoria:{
+    categoria:
+        [{type: Schema.Types.ObjectId, ref: "Categoria", required:true}]
 
-       type: Schema.ObjectId, ref: "Categoria",
-       required: true
-    },
 
 });
 
