@@ -9,8 +9,7 @@ const CategoriaSchema = Schema({
     },
     Url:{
         type: String,
-        required: true ,
-        unique: true
+        required: true
     },
     
 

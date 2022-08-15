@@ -18,14 +18,17 @@ const crearPedido= async (req, res) => {
     try {
         //usuario
         let carrito = await Carrito.findById(CarritoID);
+
         if(carrito){
+            
                     const dbPedido= new Pedido({
                         userID: carrito.userID,
                         Productos: carrito.Productos,
                         Estado: "Aprobado",
-                        Fecha: new Date().toLocaleDateString(),
+        
                         Direccion_entrega: Direccion_entrega
                     });
+                    console.log(dbPedido);
                     await Carrito.updateOne({ _id: CarritoID},{
 
                         Productos: []
@@ -103,10 +106,11 @@ const cancelarPedido= async (req, res) => {
     const {PedidoID}= req.body;
     let pedido = await Pedido.findById(PedidoID);
     if(pedido){
-
+        let carrito = await Carrito.findOne({userID: pedido.userID});
+        
         await Carrito.updateOne({userID: pedido.userID},{
 
-            Productos: pedido.Productos
+            Productos: carrito.Productos.concat( pedido.Productos)
            
         })
         await Pedido.deleteOne({ _id: PedidoID })
@@ -136,6 +140,7 @@ const getPedidos = async (req, res) => {
         })
         }
         else{
+
             return res.json(pedido)
         }
 }

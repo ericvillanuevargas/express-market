@@ -116,7 +116,12 @@ const ponerProducto = async (req, res) => {
                 let product = await Producto.findById(productoID)
                 if(product){
                     //introduccir id producto
-
+                    if(cantidad > product.cantidad){
+                        return res.status(400).json({
+                            ok: false,
+                            msg: 'Ya no quedan mas unidades...'
+                        })
+                    }
                     const dbItemCarrito= new ItemCarrito(req.body);
                     await dbItemCarrito.save();
                     await Carrito.updateOne({_id:carritoID},{

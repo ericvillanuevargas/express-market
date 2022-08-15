@@ -12,7 +12,9 @@ const PedidoSchema = Schema({
         type: String
     },
     Fecha:{
+        
         type: String,
+        default: new Date().toLocaleDateString()
     },
     Direccion_entrega:{
         type: String,
